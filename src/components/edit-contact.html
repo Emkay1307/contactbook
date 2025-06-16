@@ -4,7 +4,7 @@
     <title>Edit Contact - Contact Book</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../public/css/style.css">
 </head>
 <body onload="getContact()">
     <div class="page-container">
@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
+    <script src="../../public/js/config.js"></script>
     <script>
         document.getElementById("homeLink").addEventListener("click", homeLink);
         document.getElementById("editContact").addEventListener("click", editContact);
@@ -80,7 +80,7 @@
         }
 
         function homeLink() {
-            window.open("index.html", "_self");
+            window.open("../../index.html", "_self"); // Go up 2 levels to root
         }
 
         function displayOutput(data) {
