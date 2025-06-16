@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Book</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="fetchContacts()">
+    <div class="page-container">
+        <!-- Header with proper hierarchy and spacing -->
+        <div class="header-section">
+            <h1 class="header-title">Contact Book</h1>
+            <div class="header-actions">
+                <button id="refresh">Refresh</button>
+                <button id="addContact">Add Contact</button>
+            </div>
+        </div>
+
+        <!-- Contacts Table with proper structure -->
+        <div class="contacts-container">
+            <div id="contactsContent">
+                <div class="loading-state">Loading contacts...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        document.getElementById("refresh").addEventListener("click", fetchContacts);
+        document.getElementById("addContact").addEventListener("click", function() {
+            window.location.href = "add-contact.html";
+        });
+
+        function fetchContacts() {
+            document.getElementById("contactsContent").innerHTML = '<div class="loading-state">Loading contacts...</div>';
+            
+            fetch(rootPath + "controller/get-contacts/")
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data){
+                displayOutput(data);
+            })
+            .catch(function(error) {
+                document.getElementById("contactsContent").innerHTML = '<div class="loading-state">Error loading contacts. Please try again.</div>';
+            });
+        }
+
+        function displayOutput(data) {
+            if (!data || data.length === 0) {
+                document.getElementById("contactsContent").innerHTML = '<div class="loading-state">No contacts found. Add your first contact!</div>';
+                return;
+            }
+
+            let output = `
+                <table class="contacts-table">
+                    <thead>
+                        <tr>
+                            <th>Photo</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            for (let i = 0; i < data.length; i++) {
+                output += `
+                    <tr onclick="editContact(${data[i].id})">
+                        <td>
+                            <img src="${rootPath}controller/uploads/${data[i].avatar}" 
+                                 alt="${data[i].firstname} ${data[i].lastname}" 
+                                 class="contact-avatar" />
+                        </td>
+                        <td>
+                            <p class="contact-name">${data[i].firstname}</p>
+                        </td>
+                        <td>
+                            <p class="contact-name">${data[i].lastname}</p>
+                        </td>
+                        <td>
+                            <p class="contact-info">${data[i].mobile}</p>
+                        </td>
+                        <td>
+                            <p class="contact-info">${data[i].email}</p>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            output += `
+                    </tbody>
+                </table>
+            `;
+            
+            document.getElementById("contactsContent").innerHTML = output;
+        }
+
+        function editContact(id) {
+            window.location.href = "edit-contact.html?id=" + id;
+        }
+    </script>
+</body>
+</html>
